@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { Plus, X } from 'lucide-react';
+import { Plus, X, Heart } from 'lucide-react';
 import { Product } from '../constants';
 import { cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 interface ProductCardProps {
   product: Product;
@@ -16,6 +17,9 @@ export default function ProductCard({ product }: ProductCardProps) {
   const [isHovered, setIsHovered] = useState(false);
   const [showQuickAdd, setShowQuickAdd] = useState(false);
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+  
+  const isWishlisted = isInWishlist(product.id);
 
   return (
     <div 
@@ -46,6 +50,28 @@ export default function ProductCard({ product }: ProductCardProps) {
             </p>
           </div>
         )}
+
+        {/* WISHLIST BUTTON */}
+        <button
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            toggleWishlist(product);
+          }}
+          className="absolute top-4 right-4 z-20 group/heart"
+        >
+          <div className={cn(
+            "w-10 h-10 rounded-full border border-white/5 flex items-center justify-center transition-all duration-500",
+            isWishlisted ? "bg-brand-gold border-brand-gold" : "bg-brand-onyx/40 backdrop-blur-md group-hover/heart:bg-brand-onyx/80"
+          )}>
+            <Heart 
+              className={cn(
+                "w-4 h-4 transition-transform duration-500 group-hover/heart:scale-110",
+                isWishlisted ? "fill-brand-onyx text-brand-onyx" : "text-brand-white group-hover/heart:text-brand-gold"
+              )} 
+            />
+          </div>
+        </button>
       </Link>
 
       {/* QUICK ADD BUTTON */}

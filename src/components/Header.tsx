@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Menu, Search, ShoppingBag, User, Heart, X, Plus, ChevronRight, Globe, Phone } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
 
 const CATEGORIES = {
   Men: {
@@ -36,6 +37,7 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
   const [activeMegaMenu, setActiveMegaMenu] = useState<'Men' | 'Women' | null>(null);
   const megaMenuTimer = useRef<NodeJS.Timeout | null>(null);
   const { totalItems } = useCart();
+  const { wishlistCount } = useWishlist();
 
   const handleMouseEnter = (cat: 'Men' | 'Women') => {
     if (megaMenuTimer.current) clearTimeout(megaMenuTimer.current);
@@ -84,8 +86,8 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
 
           {/* LOGO */}
           <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif tracking-[0.2em] text-brand-white uppercase whitespace-nowrap">
-              Rajput <span className="text-brand-gold ml-[-5px] mr-[18px]">Clothes</span>
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif tracking-[0.2em] text-brand-white uppercase whitespace-nowrap mr-[10px] ml-[20px]">
+              Rajput <span className="text-brand-gold ml-[-5px] mr-[50px]">Clothes</span>
             </h1>
           </Link>
 
@@ -93,16 +95,21 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
           <div className="flex items-center gap-1 sm:gap-4 lg:gap-6">
             <button 
               onClick={onOpenSearch}
-              className="p-2 text-brand-white hover:text-brand-gold transition-colors"
+              className="p-2 text-brand-white hover:text-brand-gold transition-colors mr-[-15px]"
             >
               <Search className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
             <button className="hidden sm:block p-2 text-brand-white hover:text-brand-gold transition-colors">
               <User className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
-            <button className="hidden sm:block p-2 text-brand-white hover:text-brand-gold transition-colors">
-              <Heart className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
+            <Link to="/wishlist" className="relative p-2 text-brand-white hover:text-brand-gold transition-colors mr-[-10px]">
+              <Heart className="w-5 h-5 sm:w-6 sm:h-6 mr-[-5px]" />
+              {wishlistCount > 0 && (
+                <span className="absolute top-1 right-1 w-2 h-2 sm:w-3 sm:h-3 bg-brand-gold text-brand-onyx text-[7px] sm:text-[8px] font-bold rounded-full flex items-center justify-center animate-pulse">
+                  {wishlistCount}
+                </span>
+              )}
+            </Link>
             <button 
               onClick={onOpenCart}
               className="relative p-2 text-brand-white hover:text-brand-gold transition-colors"

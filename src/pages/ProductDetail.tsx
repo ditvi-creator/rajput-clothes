@@ -2,9 +2,11 @@ import React, { useState, useMemo } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS } from '../constants';
-import { ChevronRight, Shield, Truck, RefreshCw, Star, Info, ShoppingBag, Zap, Check } from 'lucide-react';
+import { ChevronRight, Shield, Truck, RefreshCw, Star, Info, ShoppingBag, Zap, Check, Heart } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
+import { useWishlist } from '../context/WishlistContext';
+import ImageMagnifier from '../components/ImageMagnifier';
 
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -15,8 +17,11 @@ export default function ProductDetail() {
   const [activeImage, setActiveImage] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
   const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   if (!product) return <div className="pt-40 text-center text-brand-white">Product not found.</div>;
+
+  const isWishlisted = isInWishlist(product.id);
 
   const handleAddToBag = () => {
     if (!selectedSize) {
@@ -47,16 +52,22 @@ export default function ProductDetail() {
           <div className="lg:col-span-7 flex flex-col gap-4">
             <div className="relative aspect-[3/4] overflow-hidden border border-white/5 bg-white/5">
               <AnimatePresence mode="wait">
-                <motion.img
+                <motion.div
                   key={activeImage}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
                   transition={{ duration: 0.6 }}
-                  src={images[activeImage]}
-                  alt={product.name}
-                  className="h-full w-full object-cover"
-                />
+                  className="h-full w-full"
+                >
+                  <ImageMagnifier
+                    src={images[activeImage]}
+                    alt={product.name}
+                    className="h-full w-full"
+                    zoomLevel={2.5}
+                    magnifierSize={180}
+                  />
+                </motion.div>
               </AnimatePresence>
               
               {product.tag && (
@@ -160,6 +171,20 @@ export default function ProductDetail() {
                    <Zap className="w-4 h-4" /> Quick Checkout
                  </motion.button>
                </Link>
+               <motion.button 
+                  onClick={() => toggleWishlist(product)}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className={cn(
+                    "w-full py-5 border text-[10px] tracking-[0.4em] uppercase font-black transition-all flex items-center justify-center gap-3",
+                    isWishlisted 
+                     ? "bg-brand-gold border-brand-gold text-brand-onyx" 
+                     : "bg-transparent border-white/20 text-brand-white hover:border-brand-white"
+                  )}
+                >
+                  <Heart className={cn("w-4 h-4", isWishlisted && "fill-brand-onyx")} /> 
+                  {isWishlisted ? "In Wishlist" : "Add to Wishlist"}
+                </motion.button>
             </div>
 
             {/* TRUST MARKERS */}

@@ -21,14 +21,17 @@ import Checkout from './pages/Checkout';
 import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
+import { WishlistProvider } from './context/WishlistContext';
+import Wishlist from './pages/Wishlist';
 
 export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <CartProvider>
-      <Router>
+    <WishlistProvider>
+      <CartProvider>
+        <Router>
         <main className="min-h-screen bg-brand-onyx selection:bg-brand-gold selection:text-brand-onyx pb-16 sm:pb-0">
           <Header 
             onOpenSearch={() => setIsSearchOpen(true)}
@@ -40,6 +43,7 @@ export default function App() {
             <Route path="/shop" element={<Shop />} />
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
+            <Route path="/wishlist" element={<Wishlist />} />
           </Routes>
 
         <Footer />
@@ -56,6 +60,7 @@ export default function App() {
       </main>
     </Router>
     </CartProvider>
+    </WishlistProvider>
   );
 }
 
