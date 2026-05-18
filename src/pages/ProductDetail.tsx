@@ -1,12 +1,14 @@
 import React, { useState, useMemo } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import { PRODUCTS } from '../constants';
 import { ChevronRight, Shield, Truck, RefreshCw, Star, Info, ShoppingBag, Zap, Check, Heart } from 'lucide-react';
 import { cn } from '../lib/utils';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
 import ImageMagnifier from '../components/ImageMagnifier';
+import LoginModal from '../components/LoginModal';
 
 const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
 
@@ -16,16 +18,37 @@ export default function ProductDetail() {
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
   const [activeImage, setActiveImage] = useState(0);
   const [isAdding, setIsAdding] = useState(false);
+  const [sizeError, setSizeError] = useState(false);
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
   const { addToCart } = useCart();
   const { toggleWishlist, isInWishlist } = useWishlist();
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   if (!product) return <div className="pt-40 text-center text-brand-white">Product not found.</div>;
 
   const isWishlisted = isInWishlist(product.id);
 
+  const handleQuickCheckout = () => {
+    if (!selectedSize) {
+      setSizeError(true);
+      setTimeout(() => setSizeError(false), 2000);
+      return;
+    }
+    
+    addToCart(product, selectedSize);
+
+    if (user) {
+      navigate('/checkout');
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
+
   const handleAddToBag = () => {
     if (!selectedSize) {
-      alert("Please select a size");
+      setSizeError(true);
+      setTimeout(() => setSizeError(false), 2000);
       return;
     }
     setIsAdding(true);
@@ -114,25 +137,38 @@ export default function ProductDetail() {
             {/* SIZE SELECTION */}
             <div className="mb-10">
               <div className="flex items-center justify-between mb-4">
-                <p className="text-[10px] tracking-[0.3em] font-bold text-brand-white uppercase">Select Size</p>
+                <p className={cn(
+                  "text-[10px] tracking-[0.3em] font-bold uppercase transition-colors duration-300",
+                  sizeError ? "text-brand-crimson" : "text-brand-white"
+                )}>
+                  {sizeError ? "Please Select Size" : "Select Size"}
+                </p>
                 <button className="text-[10px] tracking-[0.3em] text-brand-gold underline uppercase">Size Guide</button>
               </div>
-              <div className="grid grid-cols-5 gap-3">
+              <motion.div 
+                animate={sizeError ? { x: [-4, 4, -4, 4, 0] } : {}}
+                transition={{ duration: 0.4 }}
+                className="grid grid-cols-5 gap-3"
+              >
                 {SIZES.map(size => (
                   <button
                     key={size}
-                    onClick={() => setSelectedSize(size)}
+                    onClick={() => {
+                      setSelectedSize(size);
+                      setSizeError(false);
+                    }}
                     className={cn(
                       "h-12 border text-[10px] tracking-widest font-bold transition-all duration-300",
                       selectedSize === size 
                         ? "bg-brand-white text-brand-onyx border-brand-white" 
-                        : "bg-transparent text-brand-white/40 border-white/10 hover:border-brand-white/40"
+                        : "bg-transparent text-brand-white/40 border-white/10 hover:border-brand-white/40",
+                      sizeError && !selectedSize && "border-brand-crimson/50"
                     )}
                   >
                     {size}
                   </button>
                 ))}
-              </div>
+              </motion.div>
             </div>
 
             {/* ACTION BUTTONS */}
@@ -159,18 +195,14 @@ export default function ProductDetail() {
                    </>
                  )}
                </motion.button>
-               <Link 
-                 to="/checkout"
-                 className="w-full"
+               <motion.button 
+                 onClick={handleQuickCheckout}
+                 whileHover={{ scale: 1.02 }}
+                 whileTap={{ scale: 0.98 }}
+                 className="w-full py-5 bg-transparent border border-brand-white text-brand-white text-[10px] tracking-[0.4em] uppercase font-black hover:bg-brand-white hover:text-brand-onyx transition-all flex items-center justify-center gap-3"
                >
-                 <motion.button 
-                   whileHover={{ scale: 1.02 }}
-                   whileTap={{ scale: 0.98 }}
-                   className="w-full py-5 bg-transparent border border-brand-white text-brand-white text-[10px] tracking-[0.4em] uppercase font-black hover:bg-brand-white hover:text-brand-onyx transition-all flex items-center justify-center gap-3"
-                 >
-                   <Zap className="w-4 h-4" /> Quick Checkout
-                 </motion.button>
-               </Link>
+                 <Zap className="w-4 h-4" /> Quick Checkout
+               </motion.button>
                <motion.button 
                   onClick={() => toggleWishlist(product)}
                   whileHover={{ scale: 1.02 }}
@@ -202,6 +234,11 @@ export default function ProductDetail() {
           </div>
         </div>
       </div>
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)}
+        onSuccess={() => navigate('/checkout')}
+      />
     </div>
   );
 }

@@ -1,7 +1,11 @@
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ShoppingBag, ArrowRight, Trash2, Plus, Minus } from 'lucide-react';
 import { useCart } from '../context/CartContext';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
+import LoginModal from './LoginModal';
+import { cn } from '../lib/utils';
 
 interface CartDrawerProps {
   isOpen: boolean;
@@ -10,18 +14,31 @@ interface CartDrawerProps {
 
 export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { cart, removeFromCart, totalPrice, totalItems } = useCart();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isLoginModalOpen, setIsLoginModalOpen] = useState(false);
+
+  const handleCheckoutClick = () => {
+    if (user) {
+      onClose();
+      navigate('/checkout');
+    } else {
+      setIsLoginModalOpen(true);
+    }
+  };
 
   return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={onClose}
-            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
-          />
+    <>
+      <AnimatePresence>
+        {isOpen && (
+          <>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={onClose}
+              className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
+            />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
@@ -95,32 +112,39 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   <span className="text-xs tracking-widest uppercase text-brand-white/40">Subtotal</span>
                   <span className="font-bold text-lg text-brand-gold">₹{totalPrice.toLocaleString('en-IN')}</span>
                 </div>
-                <Link to="/checkout" className="w-full" onClick={onClose}>
-                  <button 
-                    disabled={cart.length === 0}
-                    className={cn(
-                      "w-full py-4 text-[10px] tracking-[0.3em] uppercase font-bold transition-colors",
-                      cart.length > 0 
-                        ? "bg-brand-white text-brand-onyx hover:bg-brand-gold shadow-lg" 
-                        : "bg-brand-white/5 text-brand-white/20 cursor-not-allowed"
-                    )}
-                  >
-                    CHECKOUT SECURELY
-                  </button>
-                </Link>
+                <button 
+                  onClick={handleCheckoutClick}
+                  disabled={cart.length === 0}
+                  className={cn(
+                    "w-full py-4 text-[10px] tracking-[0.3em] uppercase font-bold transition-colors",
+                    cart.length > 0 
+                      ? "bg-brand-white text-brand-onyx hover:bg-brand-gold shadow-lg" 
+                      : "bg-brand-white/5 text-brand-white/20 cursor-not-allowed"
+                  )}
+                >
+                  CHECKOUT SECURELY
+                </button>
                 <p className="mt-4 text-[10px] text-center text-brand-white/30 italic">
                   Free Express Shipping on orders over ₹40,000
                 </p>
               </div>
-          </motion.div>
-        </>
-      )}
-      <style dangerouslySetInnerHTML={{ __html: `
-        .no-scrollbar::-webkit-scrollbar { display: none; }
-        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-      `}} />
-    </AnimatePresence>
+            </motion.div>
+          </>
+        )}
+        <style dangerouslySetInnerHTML={{ __html: `
+          .no-scrollbar::-webkit-scrollbar { display: none; }
+          .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+        `}} />
+      </AnimatePresence>
+
+      <LoginModal 
+        isOpen={isLoginModalOpen} 
+        onClose={() => setIsLoginModalOpen(false)}
+        onSuccess={() => {
+          onClose();
+          navigate('/checkout');
+        }}
+      />
+    </>
   );
 }
-
-import { cn } from '../lib/utils';
