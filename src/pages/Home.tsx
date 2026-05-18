@@ -13,7 +13,7 @@ export default function Home() {
       <CollectionCarousel />
       
       {/* MISSION SECTION */}
-      <section className="py-32 bg-black">
+      <section className="py-32 bg-brand-surface/30">
         <div className="container mx-auto px-4 sm:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
             <div className="relative">
@@ -69,21 +69,21 @@ export default function Home() {
           autoPlay 
           muted 
           loop 
-          className="absolute inset-0 w-full h-full object-cover opacity-40 grayscale"
+          className="absolute inset-0 w-full h-full object-cover opacity-60 grayscale"
           poster="https://images.unsplash.com/photo-1552374196-1ab2a1c593e8?q=80&w=1800&auto=format&fit=crop"
         >
           <source src="https://assets.mixkit.co/videos/preview/mixkit-man-walking-in-a-dark-alley-34446-large.mp4" type="video/mp4" />
         </video>
-        <div className="absolute inset-0 bg-brand-onyx/60 backdrop-blur-[2px]" />
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-[2px]" />
         
         <div className="relative z-10 text-center px-4">
-          <h3 className="text-6xl sm:text-8xl font-serif text-brand-white uppercase tracking-tighter mb-8 leading-none">
+          <h3 className="text-6xl sm:text-8xl font-serif text-white uppercase tracking-tighter mb-8 leading-none">
             REDEFINE <br /> <span className="text-brand-gold italic">PRESENCE</span>
           </h3>
-          <p className="text-brand-white/60 tracking-[0.5em] uppercase text-xs sm:text-sm mb-12">Command the Room without a Single Word</p>
+          <p className="text-white/60 tracking-[0.5em] uppercase text-xs sm:text-sm mb-12">Command the Room without a Single Word</p>
           <Link 
             to="/shop"
-            className="inline-flex items-center gap-4 px-12 py-5 bg-brand-white text-brand-onyx text-[10px] tracking-[0.4em] uppercase font-bold hover:bg-brand-gold transition-colors"
+            className="inline-flex items-center gap-4 px-12 py-5 bg-white text-black text-[15px] tracking-[0.4em] uppercase font-black hover:bg-brand-gold transition-colors"
           >
             ENTER THE UNIVERSE <ArrowRight className="w-4 h-4" />
           </Link>
@@ -105,7 +105,7 @@ export default function Home() {
                 'https://images.unsplash.com/photo-1549439602-43bbcb347ad5?q=80&w=800',
                 'https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=800'
               ].map((img, idx) => (
-                <div key={idx} className="aspect-square overflow-hidden group border border-white/5">
+                <div key={idx} className="aspect-square overflow-hidden group border border-brand-white/5">
                    <img src={img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 hover:scale-110" />
                 </div>
               ))}

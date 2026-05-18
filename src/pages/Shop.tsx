@@ -100,13 +100,13 @@ export default function Shop() {
             </h1>
           </div>
           
-          <div className="flex items-center gap-4 border-b border-white/10 pb-4">
+          <div className="flex items-center gap-4 border-b border-brand-white/10 pb-4">
             {(['All', 'Men', 'Women'] as const).map(cat => (
               <button
                 key={cat}
                 onClick={() => setCategory(cat)}
                 className={cn(
-                  "text-[10px] tracking-[0.3em] uppercase font-bold transition-colors",
+                  "text-[10px] tracking-[0.3em] uppercase font-black transition-colors",
                   category === cat ? "text-brand-gold" : "text-brand-white/40 hover:text-brand-white"
                 )}
               >
@@ -118,7 +118,7 @@ export default function Shop() {
       </div>
 
       {/* FILTER BAR */}
-      <div className="sticky top-16 sm:top-20 z-40 bg-brand-onyx/80 backdrop-blur-xl border-y border-white/5 py-4 mb-12">
+      <div className="sticky top-16 sm:top-20 z-40 bg-brand-onyx/90 backdrop-blur-xl border-y border-brand-white/5 py-5 mb-12 shadow-sm">
         <div className="container mx-auto px-4 sm:px-8 flex items-center justify-between">
           <button 
             onClick={() => setIsFilterDrawerOpen(true)}
@@ -138,7 +138,7 @@ export default function Shop() {
               onClick={() => setIsSortOpen(!isSortOpen)}
               className="flex items-center gap-2 text-[10px] tracking-[0.2em] uppercase text-brand-white hover:text-brand-gold transition-colors"
             >
-              Sort By: <span className="text-brand-gold">{sortBy}</span>
+              Sort By: <span className="text-brand-gold font-black">{sortBy}</span>
               <ChevronDown className={cn("w-4 h-4 transition-transform", isSortOpen ? "rotate-180" : "")} />
             </button>
             
@@ -148,7 +148,7 @@ export default function Shop() {
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
-                  className="absolute right-0 mt-4 w-48 bg-brand-onyx border border-white/10 shadow-2xl z-50 overflow-hidden"
+                  className="absolute right-0 mt-4 w-48 bg-brand-surface border border-brand-white/10 shadow-2xl z-50 overflow-hidden"
                 >
                   {(['Featured', 'Newest', 'Price: Low', 'Price: High'] as const).map(option => (
                     <button
@@ -157,9 +157,9 @@ export default function Shop() {
                         setSortBy(option);
                         setIsSortOpen(false);
                       }}
-                      className="flex items-center justify-between w-full px-6 py-4 text-[10px] tracking-widest uppercase text-left hover:bg-white/5 transition-colors"
+                      className="flex items-center justify-between w-full px-6 py-4 text-[10px] tracking-widest uppercase text-left hover:bg-brand-gold/10 transition-colors"
                     >
-                      <span className={sortBy === option ? "text-brand-gold" : "text-brand-white/60"}>
+                      <span className={sortBy === option ? "text-brand-gold font-bold" : "text-brand-white/60"}>
                         {option}
                       </span>
                       {sortBy === option && <Check className="w-3 h-3 text-brand-gold" />}
@@ -177,6 +177,12 @@ export default function Shop() {
         <aside className="hidden lg:block w-64 shrink-0">
           <div className="sticky top-40 space-y-12">
             <FilterSection 
+              title="Size" 
+              options={filterOptions.sizes} 
+              activeOptions={selectedSizes}
+              onToggle={(val) => toggleFilter('size', val)}
+            />
+            <FilterSection 
               title="Material" 
               options={filterOptions.materials} 
               activeOptions={selectedMaterials}
@@ -187,12 +193,6 @@ export default function Shop() {
               options={filterOptions.colors} 
               activeOptions={selectedColors}
               onToggle={(val) => toggleFilter('color', val)}
-            />
-            <FilterSection 
-              title="Size" 
-              options={filterOptions.sizes} 
-              activeOptions={selectedSizes}
-              onToggle={(val) => toggleFilter('size', val)}
             />
             
             {activeFiltersCount > 0 && (
@@ -251,14 +251,14 @@ export default function Shop() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setIsFilterDrawerOpen(false)}
-              className="fixed inset-0 bg-brand-onyx/90 backdrop-blur-sm z-[100]"
+              className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100]"
             />
             <motion.div
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 30, stiffness: 300 }}
-              className="fixed top-0 right-0 w-full max-w-sm h-full bg-brand-onyx z-[110] border-l border-white/5 p-8 flex flex-col"
+              className="fixed top-0 right-0 w-full max-w-sm h-full bg-brand-onyx z-[110] border-l border-brand-white/5 p-8 flex flex-col"
             >
               <div className="flex items-center justify-between mb-12">
                 <h2 className="text-xl font-serif text-brand-white">Filters</h2>
@@ -268,6 +268,12 @@ export default function Shop() {
               </div>
 
               <div className="flex-1 overflow-y-auto no-scrollbar space-y-12 pb-12">
+                <FilterSection 
+                  title="Size" 
+                  options={filterOptions.sizes} 
+                  activeOptions={selectedSizes}
+                  onToggle={(val) => toggleFilter('size', val)}
+                />
                 <FilterSection 
                   title="Material" 
                   options={filterOptions.materials} 
@@ -280,15 +286,9 @@ export default function Shop() {
                   activeOptions={selectedColors}
                   onToggle={(val) => toggleFilter('color', val)}
                 />
-                <FilterSection 
-                  title="Size" 
-                  options={filterOptions.sizes} 
-                  activeOptions={selectedSizes}
-                  onToggle={(val) => toggleFilter('size', val)}
-                />
               </div>
 
-              <div className="pt-8 border-t border-white/10 flex flex-col gap-4">
+              <div className="pt-8 border-t border-brand-white/10 flex flex-col gap-4">
                 <button 
                   onClick={() => setIsFilterDrawerOpen(false)}
                   className="w-full py-5 bg-brand-white text-brand-onyx text-[10px] tracking-[0.4em] uppercase font-black"
@@ -332,7 +332,7 @@ function FilterSection({ title, options, activeOptions, onToggle }: FilterSectio
         onClick={() => setIsOpen(!isOpen)}
         className="flex items-center justify-between group"
       >
-        <span className="text-[10px] tracking-[0.4em] text-brand-white uppercase font-bold group-hover:text-brand-gold transition-colors tracking-[0.6em]">{title}</span>
+        <span className="text-[12px] tracking-[0.4em] text-brand-white uppercase font-bold group-hover:text-brand-gold transition-colors tracking-[0.6em]">{title}</span>
         <ChevronRight className={cn("w-3 h-3 text-brand-white/20 transition-transform", isOpen ? "rotate-90" : "")} />
       </button>
       
@@ -350,10 +350,10 @@ function FilterSection({ title, options, activeOptions, onToggle }: FilterSectio
                   key={`${title}-${option}`}
                   onClick={() => onToggle(option)}
                   className={cn(
-                    "px-4 py-2 border text-[9px] tracking-widest uppercase font-medium transition-all duration-300",
+                    "px-4 py-2 border text-[13px] tracking-widest uppercase font-black transition-all duration-300",
                     activeOptions.includes(option)
                       ? "bg-brand-gold border-brand-gold text-brand-onyx"
-                      : "bg-transparent border-white/10 text-brand-white/40 hover:border-brand-white/40"
+                      : "bg-brand-surface border-brand-white/5 text-brand-white/60 hover:border-brand-white/40"
                   )}
                 >
                   {option}

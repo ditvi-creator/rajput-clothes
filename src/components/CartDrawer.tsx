@@ -20,7 +20,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 z-[60] bg-brand-onyx/60 backdrop-blur-sm"
+            className="fixed inset-0 z-[60] bg-black/60 backdrop-blur-sm"
           />
           <motion.div
             initial={{ x: '100%' }}
@@ -36,7 +36,7 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               </div>
               <button 
                 onClick={onClose}
-                className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                className="p-2 hover:bg-brand-onyx/10 rounded-full transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -47,25 +47,25 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 <div className="flex flex-col gap-8">
                   {cart.map((item) => (
                     <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4">
-                      <div className="w-24 aspect-[3/4] bg-gray-50 overflow-hidden">
+                      <div className="w-24 aspect-[3/4] bg-brand-onyx/5 overflow-hidden">
                         <img src={item.image} className="w-full h-full object-cover" alt={item.name} />
                       </div>
                       <div className="flex-1 flex flex-col">
                         <div className="flex justify-between items-start mb-1">
-                          <h3 className="text-sm font-sans uppercase tracking-widest font-bold max-w-[160px] leading-tight">{item.name}</h3>
+                          <h3 className="text-sm font-sans uppercase tracking-widest font-bold max-w-[160px] leading-tight text-white">{item.name}</h3>
                           <button 
                             onClick={() => removeFromCart(item.id, item.selectedSize)}
-                            className="text-gray-400 hover:text-red-500 transition-colors"
+                            className="text-white/40 hover:text-red-500 transition-colors"
                           >
                             <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
-                        <p className="text-[10px] text-gray-500 uppercase tracking-widest mb-4">Size: {item.selectedSize}</p>
+                        <p className="text-[10px] text-white/40 uppercase tracking-widest mb-4">Size: {item.selectedSize}</p>
                         <div className="mt-auto flex items-center justify-between">
-                          <div className="flex items-center border border-gray-100 rounded px-2 py-1">
+                          <div className="flex items-center border border-white/10 rounded px-2 py-1">
                             <span className="text-xs font-bold px-2">{item.quantity}</span>
                           </div>
-                          <span className="text-sm font-bold">₹{item.price.toLocaleString('en-IN')}</span>
+                          <span className="text-sm font-bold text-brand-gold">₹{item.price.toLocaleString('en-IN')}</span>
                         </div>
                       </div>
                     </div>
@@ -73,11 +73,11 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 </div>
               ) : (
                 <div className="h-full flex flex-col items-center justify-center text-center">
-                  <div className="w-16 h-16 bg-gray-50 rounded-full flex items-center justify-center mb-6">
-                    <ShoppingBag className="w-8 h-8 text-gray-300" />
+                  <div className="w-16 h-16 bg-white/5 rounded-full flex items-center justify-center mb-6">
+                    <ShoppingBag className="w-8 h-8 text-white/20" />
                   </div>
-                  <p className="text-sm tracking-widest uppercase font-bold mb-2">YOUR BAG IS EMPTY</p>
-                  <p className="text-xs text-gray-500 mb-8 max-w-[200px]">
+                  <p className="text-sm tracking-widest uppercase font-bold mb-2 text-white">YOUR BAG IS EMPTY</p>
+                  <p className="text-xs text-white/40 mb-8 max-w-[200px]">
                     It seems you haven't added any heritage pieces yet.
                   </p>
                   <button 
@@ -90,10 +90,10 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
               )}
             </div>
 
-            <div className="mt-auto border-t border-gray-100 pt-8">
+            <div className="mt-auto border-t border-white/10 pt-8">
               <div className="flex justify-between mb-4">
-                <span className="text-xs tracking-widest uppercase text-gray-500">Subtotal</span>
-                <span className="font-bold text-lg">₹{totalPrice.toLocaleString('en-IN')}</span>
+                <span className="text-xs tracking-widest uppercase text-white/40">Subtotal</span>
+                <span className="font-bold text-lg text-brand-gold">₹{totalPrice.toLocaleString('en-IN')}</span>
               </div>
               <Link to="/checkout" className="w-full" onClick={onClose}>
                 <button 
@@ -101,8 +101,8 @@ export default function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                   className={cn(
                     "w-full py-4 text-[10px] tracking-[0.3em] uppercase font-bold transition-colors",
                     cart.length > 0 
-                      ? "bg-brand-onyx text-brand-white hover:bg-brand-gold" 
-                      : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                      ? "bg-brand-onyx text-brand-white hover:bg-brand-gold shadow-lg" 
+                      : "bg-white/5 text-white/20 cursor-not-allowed"
                   )}
                 >
                   CHECKOUT SECURELY

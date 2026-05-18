@@ -28,7 +28,7 @@ export default function ProductCard({ product }: ProductCardProps) {
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* IMAGE CONTAINER */}
-      <Link to={`/product/${product.id}`} className="relative aspect-product overflow-hidden border border-white/5">
+      <Link to={`/product/${product.id}`} className="relative aspect-product overflow-hidden border border-brand-white/5">
         <AnimatePresence mode="wait">
           <motion.img
             key={isHovered ? 'secondary' : 'primary'}
@@ -44,8 +44,8 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* BADGES */}
         {product.tag && (
-          <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-brand-onyx border border-brand-gold/50 backdrop-blur-md">
-            <p className="text-[9px] font-bold tracking-widest text-brand-gold uppercase">
+          <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-brand-white text-brand-onyx border border-brand-gold/30 shadow-2xl">
+            <p className="text-[9px] font-bold tracking-widest uppercase">
               {product.tag}
             </p>
           </div>
@@ -61,8 +61,8 @@ export default function ProductCard({ product }: ProductCardProps) {
           className="absolute top-4 right-4 z-20 group/heart"
         >
           <div className={cn(
-            "w-10 h-10 rounded-full border border-white/5 flex items-center justify-center transition-all duration-500",
-            isWishlisted ? "bg-brand-gold border-brand-gold" : "bg-brand-onyx/40 backdrop-blur-md group-hover/heart:bg-brand-onyx/80"
+            "w-10 h-10 rounded-full border border-brand-white/5 flex items-center justify-center transition-all duration-500",
+            isWishlisted ? "bg-brand-gold border-brand-gold shadow-lg shadow-brand-gold/20" : "bg-white/80 backdrop-blur-md group-hover/heart:bg-white"
           )}>
             <Heart 
               className={cn(

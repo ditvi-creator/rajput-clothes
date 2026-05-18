@@ -92,8 +92,9 @@ export default function Checkout() {
                   </div>
                 </div>
 
-                <div className="col-span-2 mt-12 bg-white/5 p-8 border border-white/5">
-                   <div className="flex items-start gap-4 mb-8">
+                <div className="col-span-2 mt-12 bg-brand-surface border border-brand-white/5 p-8 relative overflow-hidden group">
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-brand-gold/5 blur-3xl -mr-16 -mt-16" />
+                   <div className="flex items-start gap-4 mb-8 relative z-10">
                       <Lock className="w-6 h-6 text-brand-gold" />
                       <div>
                         <p className="text-[10px] tracking-widest text-brand-white uppercase font-bold mb-1">Encrypted Transaction</p>
@@ -103,8 +104,8 @@ export default function Checkout() {
                    <button 
                     disabled={isProcessing || cart.length === 0}
                     className={cn(
-                      "w-full py-6 text-[10px] tracking-[0.5em] uppercase font-bold transition-all",
-                      isProcessing ? "bg-brand-gold/50 text-brand-onyx cursor-wait" : "bg-brand-white text-brand-onyx hover:bg-brand-gold"
+                      "w-full py-6 text-[10px] tracking-[0.5em] uppercase font-black transition-all relative z-10",
+                      isProcessing ? "bg-brand-gold/50 text-brand-onyx cursor-wait" : "bg-brand-white text-brand-onyx hover:bg-brand-gold shadow-lg shadow-brand-gold/10 hover:shadow-brand-gold/20"
                     )}
                    >
                      {isProcessing ? "PROCESSING SECURELY..." : "COMPLETE PURCHASE"}
@@ -116,12 +117,12 @@ export default function Checkout() {
 
           {/* ORDER SUMMARY */}
           <div className="lg:col-span-5">
-             <div className="sticky top-32 bg-white/5 p-8 border border-white/5">
+             <div className="sticky top-32 bg-brand-surface p-8 border border-brand-white/5 shadow-sm">
                 <h3 className="text-[10px] tracking-[0.4em] text-brand-gold uppercase font-bold mb-8">Order Summary</h3>
                 <div className="flex flex-col gap-6 mb-8 max-h-[400px] overflow-y-auto no-scrollbar pr-2">
                   {cart.map(item => (
                     <div key={`${item.id}-${item.selectedSize}`} className="flex gap-4">
-                      <div className="w-16 aspect-[3/4] overflow-hidden bg-white/5">
+                      <div className="w-16 aspect-[3/4] overflow-hidden bg-brand-onyx/50 border border-brand-white/5">
                         <img src={item.image} className="w-full h-full object-cover" />
                       </div>
                       <div className="flex-1">
@@ -133,18 +134,18 @@ export default function Checkout() {
                   ))}
                 </div>
 
-                <div className="border-t border-white/10 pt-8 flex flex-col gap-4">
+                <div className="border-t border-brand-white/10 pt-8 flex flex-col gap-4">
                    <div className="flex justify-between text-xs tracking-widest text-brand-white/40 uppercase">
                       <span>Subtotal</span>
-                      <span className="font-mono text-[25px]">₹{totalPrice.toLocaleString('en-IN')}</span>
+                      <span className="font-mono text-brand-white">₹{totalPrice.toLocaleString('en-IN')}</span>
                    </div>
                    <div className="flex justify-between text-xs tracking-widest text-brand-white/40 uppercase">
                       <span>Shipping</span>
                       <span className="text-brand-gold font-bold">FREE</span>
                    </div>
-                   <div className="flex justify-between text-lg tracking-[0.2em] text-brand-white uppercase font-serif mt-4 pt-4 border-t border-white/10">
+                   <div className="flex justify-between text-lg tracking-[0.2em] text-brand-white uppercase font-serif mt-4 pt-4 border-t border-brand-white/10">
                       <span>Total</span>
-                      <span className="text-brand-gold text-[25px]">₹{totalPrice.toLocaleString('en-IN')}</span>
+                      <span className="text-brand-gold font-bold">₹{totalPrice.toLocaleString('en-IN')}</span>
                    </div>
                 </div>
              </div>
@@ -162,12 +163,12 @@ export default function Checkout() {
 function Input({ label, placeholder }: { label: string, placeholder: string }) {
   return (
     <div className="flex flex-col gap-2">
-      <label className="text-[15px] tracking-widest text-brand-white/40 uppercase font-bold">{label}</label>
+      <label className="text-[10px] tracking-widest text-brand-white/40 uppercase font-bold">{label}</label>
       <input 
         required
         type="text" 
         placeholder={placeholder}
-        className="bg-transparent border-b border-white/10 py-3 text-sm text-brand-white placeholder:text-white/10 focus:outline-none focus:border-brand-gold transition-colors"
+        className="bg-transparent border-b border-brand-white/10 py-4 text-sm text-brand-white placeholder:text-brand-white/10 focus:outline-none focus:border-brand-gold transition-colors"
       />
     </div>
   );
@@ -180,11 +181,11 @@ function PaymentOption({ icon, name, active, onClick }: { icon: React.ReactNode,
       onClick={onClick}
       className={cn(
         "flex items-center gap-4 p-5 border transition-all duration-300",
-        active ? "border-brand-gold bg-brand-gold/10" : "border-white/5 hover:border-white/20"
+        active ? "border-brand-gold bg-brand-gold/5" : "border-brand-white/5 hover:border-brand-white/20"
       )}
     >
-      <div className={cn(active ? "text-brand-gold" : "text-white/20")}>{icon}</div>
-      <span className={cn("text-[10px] tracking-widest uppercase font-bold", active ? "text-brand-white" : "text-brand-white/40")}>{name}</span>
+      <div className={cn(active ? "text-brand-gold" : "text-brand-white/20")}>{icon}</div>
+      <span className={cn("text-[10px] tracking-widest uppercase font-bold", active ? "text-brand-white font-black" : "text-brand-white/40")}>{name}</span>
     </button>
   );
 }

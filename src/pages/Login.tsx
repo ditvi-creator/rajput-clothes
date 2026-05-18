@@ -23,8 +23,10 @@ export default function Login() {
   const navigate = useNavigate();
 
   const handleSocialLogin = async () => {
+    if (isLoading) return;
     try {
       setIsLoading(true);
+      setError(null);
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       
@@ -44,6 +46,9 @@ export default function Login() {
       
       navigate('/shop');
     } catch (err: any) {
+      if (err.code === 'auth/cancelled-popup-request' || err.code === 'auth/popup-closed-by-user') {
+        return;
+      }
       setError(err.message);
     } finally {
       setIsLoading(false);
@@ -90,7 +95,7 @@ export default function Login() {
       {/* BACKGROUND DECOR */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-brand-gold/5 rounded-full blur-[120px]" />
-        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-white/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-white/2 rounded-full blur-[120px]" />
       </div>
 
       <motion.div 
@@ -98,7 +103,7 @@ export default function Login() {
         animate={{ opacity: 1, y: 0 }}
         className="w-full max-w-md z-10"
       >
-        <div className="bg-white/[0.02] backdrop-blur-2xl border border-white/5 p-8 sm:p-12">
+        <div className="bg-brand-surface/40 backdrop-blur-2xl border border-brand-white/5 p-8 sm:p-12">
           {/* HEADER */}
           <div className="text-center mb-10">
             <h1 className="text-3xl font-serif text-brand-white mb-3">
@@ -109,25 +114,27 @@ export default function Login() {
             </p>
           </div>
 
-          {/* SOCIAL LOGIN */}
           <div className="flex gap-4 mb-8 text-center">
             <button 
+              disabled={isLoading}
               onClick={() => handleSocialLogin()}
-              className="w-full py-3 border border-white/5 flex items-center justify-center gap-3 hover:bg-white/5 transition-colors group"
+              className="w-full py-3 border border-brand-white/5 flex items-center justify-center gap-3 hover:bg-brand-white/5 transition-colors group disabled:opacity-50"
             >
-              <Chrome className="w-4 h-4 text-brand-white/40 group-hover:text-brand-white transition-colors" />
-              <span className="text-[10px] tracking-widest text-brand-white/60 uppercase font-bold">Continue with Google</span>
+              <Chrome className="w-4 h-4 text-brand-white/40 group-hover:text-brand-gold transition-colors" />
+              <span className="text-[10px] tracking-widest text-brand-white/60 uppercase font-bold">
+                {isLoading ? 'Connecting...' : 'Continue with Google'}
+              </span>
             </button>
           </div>
 
           <div className="relative flex items-center gap-4 mb-8">
-            <div className="h-[1px] flex-1 bg-white/5" />
+            <div className="h-[1px] flex-1 bg-brand-white/5" />
             <span className="text-[9px] tracking-widest text-brand-white/20 uppercase">OR</span>
-            <div className="h-[1px] flex-1 bg-white/5" />
+            <div className="h-[1px] flex-1 bg-brand-white/5" />
           </div>
 
           {error && (
-            <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-500 text-[10px] uppercase tracking-widest">
+            <div className="mb-6 p-4 bg-brand-crimson/10 border border-brand-crimson/20 text-brand-crimson text-[10px] uppercase tracking-widest font-bold text-center">
               {error}
             </div>
           )}
@@ -145,7 +152,7 @@ export default function Login() {
                     value={displayName}
                     onChange={(e) => setDisplayName(e.target.value)}
                     placeholder="Arjun Singh"
-                    className="w-full bg-white/5 border border-white/5 px-12 py-4 text-brand-white text-sm focus:outline-none focus:border-brand-gold/50 transition-all placeholder:text-brand-white/10"
+                    className="w-full bg-brand-white/2 border border-brand-white/5 px-12 py-4 text-brand-white text-sm focus:outline-none focus:border-brand-gold/50 transition-all placeholder:text-brand-white/10"
                   />
                 </div>
               </div>
@@ -161,7 +168,7 @@ export default function Login() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder="name@example.com"
-                  className="w-full bg-white/5 border border-white/5 px-12 py-4 text-brand-white text-sm focus:outline-none focus:border-brand-gold/50 transition-all placeholder:text-brand-white/10"
+                  className="w-full bg-brand-white/2 border border-brand-white/5 px-12 py-4 text-brand-white text-sm focus:outline-none focus:border-brand-gold/50 transition-all placeholder:text-brand-white/10"
                 />
               </div>
             </div>
@@ -183,7 +190,7 @@ export default function Login() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full bg-white/5 border border-white/5 px-12 py-4 text-brand-white text-sm focus:outline-none focus:border-brand-gold/50 transition-all placeholder:text-brand-white/10"
+                  className="w-full bg-brand-white/2 border border-brand-white/5 px-12 py-4 text-brand-white text-sm focus:outline-none focus:border-brand-gold/50 transition-all placeholder:text-brand-white/10"
                 />
                 <button 
                   type="button"

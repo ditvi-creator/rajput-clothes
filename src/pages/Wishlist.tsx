@@ -44,7 +44,7 @@ export default function Wishlist() {
           </motion.div>
         ) : (
           <div className="py-32 flex flex-col items-center text-center">
-            <div className="w-20 h-20 rounded-full border border-white/5 flex items-center justify-center mb-8">
+            <div className="w-20 h-20 rounded-full border border-brand-white/5 flex items-center justify-center mb-8">
               <ShoppingBag className="w-8 h-8 text-brand-white/20" />
             </div>
             <h2 className="text-2xl font-serif text-brand-white mb-4">Your collection is empty</h2>

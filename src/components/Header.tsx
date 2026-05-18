@@ -70,24 +70,18 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
         <div className="container mx-auto px-4 sm:px-8 flex items-center justify-between h-full">
           {/* DESKTOP LEFT NAV */}
           <div className="hidden lg:flex items-center gap-10 h-full">
-            <Link to="/shop" className="h-full flex items-center">
-              <NavHoverLink 
-                onMouseEnter={() => handleMouseEnter('Men')}
-                onMouseLeave={handleMouseLeave}
-              >
-                Men
-              </NavHoverLink>
+            <Link to="/" className="h-full flex items-center">
+              <NavHoverLink>Home</NavHoverLink>
             </Link>
             <Link to="/shop" className="h-full flex items-center">
-              <NavHoverLink 
-                onMouseEnter={() => handleMouseEnter('Women')}
-                onMouseLeave={handleMouseLeave}
-              >
-                Women
-              </NavHoverLink>
+              <NavHoverLink>Shop</NavHoverLink>
             </Link>
-            <NavHoverLink>The Royal Edit</NavHoverLink>
-            <NavHoverLink>Our Story</NavHoverLink>
+            <Link to="/about" className="h-full flex items-center">
+              <NavHoverLink>About</NavHoverLink>
+            </Link>
+            <Link to="/contact" className="h-full flex items-center">
+              <NavHoverLink>Contact Us</NavHoverLink>
+            </Link>
           </div>
 
           {/* MOBILE HAMBURGER Trigger */}
@@ -100,7 +94,7 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
 
           {/* LOGO */}
           <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif tracking-[0.2em] text-brand-white uppercase whitespace-nowrap mr-[10px] ml-[20px]">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif tracking-[0.2em] text-brand-white uppercase whitespace-nowrap mr-[150px] ml-[150px]">
               Rajput <span className="text-brand-gold ml-[-5px] mr-[50px]">Clothes</span>
             </h1>
           </Link>
@@ -131,7 +125,7 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="hidden sm:block px-4 py-2 text-[10px] tracking-[0.3em] uppercase font-bold text-brand-white border border-white/10 hover:border-brand-gold hover:text-brand-gold transition-all">
+              <Link to="/login" className="hidden sm:block px-4 py-2 text-[15px] tracking-[0.3em] uppercase font-bold text-brand-white border border-brand-white/10 hover:border-brand-gold hover:text-brand-gold transition-all">
                 Sign In
               </Link>
             )}
@@ -171,7 +165,7 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
               }}
               onMouseLeave={handleMouseLeave}
               key={activeMegaMenu}
-              className="absolute top-full left-0 right-0 bg-brand-onyx border-b border-white/5 py-12 hidden lg:block"
+              className="absolute top-full left-0 right-0 bg-brand-onyx border-b border-brand-white/5 py-12 hidden lg:block"
             >
               <div className="container mx-auto px-8 grid grid-cols-12 gap-12">
                 <div className="col-span-3">
@@ -230,43 +224,13 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
             </div>
 
             <div className="flex-1 flex flex-col gap-6 overflow-y-auto pt-4 no-scrollbar">
-               {(['Men', 'Women'] as const).map(cat => (
-                 <div key={cat} className="flex flex-col gap-4">
-                    <button 
-                      onClick={() => setExpandedMobileCat(expandedMobileCat === cat ? null : cat)}
-                      className="flex items-center justify-between w-full text-4xl font-serif text-brand-white uppercase tracking-tighter"
-                    >
-                      {cat} 
-                      <motion.div
-                        animate={{ rotate: expandedMobileCat === cat ? 45 : 0 }}
-                      >
-                        <Plus className="w-6 h-6 text-brand-gold" />
-                      </motion.div>
-                    </button>
-                    <AnimatePresence>
-                      {expandedMobileCat === cat && (
-                        <motion.div
-                          initial={{ height: 0, opacity: 0 }}
-                          animate={{ height: 'auto', opacity: 1 }}
-                          exit={{ height: 0, opacity: 0 }}
-                          className="overflow-hidden flex flex-col gap-4 pl-4 border-l border-brand-gold/30"
-                        >
-                           {CATEGORIES[cat].products.map(p => (
-                             <a key={`prod-${cat}-${p}`} href="#" className="text-lg tracking-widest text-brand-white/60 uppercase">{p}</a>
-                           ))}
-                           {CATEGORIES[cat].collections.map(c => (
-                             <a key={`coll-${cat}-${c}`} href="#" className="text-lg tracking-widest text-brand-gold/60 italic font-serif">{c}</a>
-                           ))}
-                        </motion.div>
-                      )}
-                    </AnimatePresence>
-                 </div>
-               ))}
-               <a href="#" className="text-4xl font-serif text-brand-white uppercase tracking-tighter opacity-60">The Royal Edit</a>
-               <a href="#" className="text-4xl font-serif text-brand-white uppercase tracking-tighter opacity-60">Our Story</a>
+               <Link to="/" onClick={() => setIsMobileMenuOpen(false)} className="text-4xl font-serif text-brand-white uppercase tracking-tighter">Home</Link>
+               <Link to="/shop" onClick={() => setIsMobileMenuOpen(false)} className="text-4xl font-serif text-brand-white uppercase tracking-tighter">Shop</Link>
+               <Link to="/about" onClick={() => setIsMobileMenuOpen(false)} className="text-4xl font-serif text-brand-white uppercase tracking-tighter">About</Link>
+               <Link to="/contact" onClick={() => setIsMobileMenuOpen(false)} className="text-4xl font-serif text-brand-white uppercase tracking-tighter">Contact Us</Link>
             </div>
 
-            <div className="mt-auto pt-8 border-t border-white/5 flex flex-col gap-6">
+            <div className="mt-auto pt-8 border-t border-brand-white/5 flex flex-col gap-6">
                <div className="flex items-center justify-between text-xs tracking-[0.2em] text-brand-white/40 uppercase">
                   <div className="flex items-center gap-2">
                     <Globe className="w-4 h-4" /> INR ₹
@@ -302,7 +266,7 @@ function NavHoverLink({ children, onMouseEnter, onMouseLeave }: NavHoverLinkProp
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
     >
-      <span className="text-[11px] tracking-[0.3em] uppercase text-brand-white/70 group-hover:text-brand-white group-hover:-translate-y-px transition-all duration-300">
+      <span className="text-[15px] tracking-[0.3em] uppercase text-brand-white/70 group-hover:text-brand-white group-hover:-translate-y-px transition-all duration-300">
         {children}
       </span>
       <span className="absolute bottom-4 left-1/2 -translate-x-1/2 w-1 h-1 bg-brand-gold rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300" />

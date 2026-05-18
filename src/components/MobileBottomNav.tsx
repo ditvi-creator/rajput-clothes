@@ -12,7 +12,7 @@ interface MobileBottomNavProps {
 export default function MobileBottomNav({ onOpenSearch, onOpenCart }: MobileBottomNavProps) {
   const { totalItems } = useCart();
   return (
-    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-onyx/80 backdrop-blur-xl border-t border-white/5 px-6 py-3">
+    <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-onyx/90 backdrop-blur-xl border-t border-brand-white/5 px-6 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
       <div className="flex items-center justify-between">
         <Link to="/">
           <NavButton icon={<Home className="w-6 h-6" />} label="Home" active />

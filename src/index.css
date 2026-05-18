@@ -5,15 +5,16 @@
   --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", sans-serif;
 
-  --color-brand-onyx: #0F0F0F;
-  --color-brand-gold: #D4AF37;
-  --color-brand-crimson: #D11A2A;
-  --color-brand-white: #FFFFFF;
+  --color-brand-onyx: #FDFCFB;
+  --color-brand-gold: #8C6D31;
+  --color-brand-crimson: #931A25;
+  --color-brand-white: #121212;
+  --color-brand-surface: #F4F0EB;
 }
 
 @layer base {
   body {
-    @apply bg-brand-onyx text-brand-white font-sans antialiased;
+    @apply bg-brand-onyx text-brand-white font-sans antialiased selection:bg-brand-gold/20 selection:text-brand-gold;
   }
 
   h1, h2, h3, h4, h5, h6 {
@@ -23,7 +24,7 @@
 
 /* Custom scrollbar for premium feel */
 ::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -31,11 +32,11 @@
 }
 
 ::-webkit-scrollbar-thumb {
-  @apply bg-brand-gold/30 rounded-full hover:bg-brand-gold/50 transition-colors;
+  @apply bg-brand-gold/20 rounded-full hover:bg-brand-gold/40 transition-colors;
 }
 
 .glass {
-  @apply backdrop-blur-md bg-brand-onyx/70 border-b border-white/10;
+  @apply backdrop-blur-md bg-brand-onyx/80 border-b border-brand-white/5;
 }
 
 .aspect-product {
