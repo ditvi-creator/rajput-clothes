@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'motion/react';
 import { useCart } from '../context/CartContext';
-import { ChevronRight, ShieldCheck, Truck, Lock, CreditCard, Zap } from 'lucide-react';
+import { ChevronRight, ShieldCheck, Truck, Lock, CreditCard, Zap, Banknote } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { cn } from '../lib/utils';
 
@@ -10,6 +10,7 @@ export default function Checkout() {
   const navigate = useNavigate();
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [paymentMethod, setPaymentMethod] = useState<'CARD' | 'COD'>('CARD');
 
   const handlePlaceOrder = (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,8 +77,18 @@ export default function Checkout() {
                     Payment Method
                   </h2>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <PaymentOption icon={<CreditCard className="w-5 h-5" />} name="Credit/Debit Card" active />
-                    <PaymentOption icon={<Zap className="w-5 h-5" />} name="UPI / Net Banking" />
+                    <PaymentOption 
+                      icon={<CreditCard className="w-5 h-5" />} 
+                      name="Credit / Debit Card" 
+                      active={paymentMethod === 'CARD'} 
+                      onClick={() => setPaymentMethod('CARD')}
+                    />
+                    <PaymentOption 
+                      icon={<Banknote className="w-5 h-5" />} 
+                      name="Cash on Delivery (COD)" 
+                      active={paymentMethod === 'COD'} 
+                      onClick={() => setPaymentMethod('COD')}
+                    />
                   </div>
                 </div>
 
@@ -162,10 +173,11 @@ function Input({ label, placeholder }: { label: string, placeholder: string }) {
   );
 }
 
-function PaymentOption({ icon, name, active }: { icon: React.ReactNode, name: string, active?: boolean }) {
+function PaymentOption({ icon, name, active, onClick }: { icon: React.ReactNode, name: string, active?: boolean, onClick?: () => void }) {
   return (
     <button 
       type="button"
+      onClick={onClick}
       className={cn(
         "flex items-center gap-4 p-5 border transition-all duration-300",
         active ? "border-brand-gold bg-brand-gold/10" : "border-white/5 hover:border-white/20"

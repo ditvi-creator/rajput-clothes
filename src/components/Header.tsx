@@ -1,9 +1,12 @@
 import React, { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, Search, ShoppingBag, User, Heart, X, Plus, ChevronRight, Globe, Phone } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Menu, Search, ShoppingBag, User, Heart, X, Plus, ChevronRight, Globe, Phone, LogOut } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
+import { useAuth } from '../context/AuthContext';
+import { auth as firebaseAuth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
 
 const CATEGORIES = {
   Men: {
@@ -38,6 +41,17 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
   const megaMenuTimer = useRef<NodeJS.Timeout | null>(null);
   const { totalItems } = useCart();
   const { wishlistCount } = useWishlist();
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const handleLogout = async () => {
+    try {
+      await signOut(firebaseAuth);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleMouseEnter = (cat: 'Men' | 'Women') => {
     if (megaMenuTimer.current) clearTimeout(megaMenuTimer.current);
@@ -99,9 +113,26 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
             >
               <Search className="w-5 h-5 sm:w-6 sm:h-6" />
             </button>
-            <button className="hidden sm:block p-2 text-brand-white hover:text-brand-gold transition-colors">
-              <User className="w-5 h-5 sm:w-6 sm:h-6" />
-            </button>
+            
+            {user ? (
+              <div className="flex items-center gap-4">
+                <span className="hidden xl:block text-[10px] tracking-widest text-brand-white/40 uppercase">
+                  {user.displayName || 'User'}
+                </span>
+                <button 
+                  onClick={handleLogout}
+                  className="p-2 text-brand-white hover:text-brand-gold transition-colors"
+                  title="Logout"
+                >
+                  <LogOut className="w-5 h-5 sm:w-6 sm:h-6" />
+                </button>
+              </div>
+            ) : (
+              <Link to="/login" className="hidden sm:block p-2 text-brand-white hover:text-brand-gold transition-colors">
+                <User className="w-5 h-5 sm:w-6 sm:h-6" />
+              </Link>
+            )}
+
             <Link to="/wishlist" className="relative p-2 text-brand-white hover:text-brand-gold transition-colors mr-[-10px]">
               <Heart className="w-5 h-5 sm:w-6 sm:h-6 mr-[-5px]" />
               {wishlistCount > 0 && (

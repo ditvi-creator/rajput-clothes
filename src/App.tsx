@@ -22,15 +22,18 @@ import { useState } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { CartProvider } from './context/CartContext';
 import { WishlistProvider } from './context/WishlistContext';
+import { AuthProvider } from './context/AuthContext';
 import Wishlist from './pages/Wishlist';
+import Login from './pages/Login';
 
 export default function App() {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
-    <WishlistProvider>
-      <CartProvider>
+    <AuthProvider>
+      <WishlistProvider>
+        <CartProvider>
         <Router>
         <main className="min-h-screen bg-brand-onyx selection:bg-brand-gold selection:text-brand-onyx pb-16 sm:pb-0">
           <Header 
@@ -44,6 +47,7 @@ export default function App() {
             <Route path="/product/:id" element={<ProductDetail />} />
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/wishlist" element={<Wishlist />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
 
         <Footer />
@@ -61,6 +65,7 @@ export default function App() {
     </Router>
     </CartProvider>
     </WishlistProvider>
+    </AuthProvider>
   );
 }
 
