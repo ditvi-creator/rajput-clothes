@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Mail, Lock, ArrowRight, Eye, EyeOff, Github, Chrome, User } from 'lucide-react';
+import { Mail, Lock, ArrowRight, Eye, EyeOff, Chrome, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   signInWithEmailAndPassword, 
@@ -22,35 +22,31 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  const handleSocialLogin = async (provider: 'GOOGLE' | 'GITHUB') => {
-    if (provider === 'GOOGLE') {
-      try {
-        setIsLoading(true);
-        const result = await signInWithPopup(auth, googleProvider);
-        const user = result.user;
-        
-        // Sync to firestore
-        const userRef = doc(db, 'users', user.uid);
-        const userDoc = await getDoc(userRef);
-        
-        if (!userDoc.exists()) {
-          await setDoc(userRef, {
-            uid: user.uid,
-            email: user.email,
-            displayName: user.displayName,
-            createdAt: new Date().toISOString(),
-            updatedAt: new Date().toISOString()
-          });
-        }
-        
-        navigate('/shop');
-      } catch (err: any) {
-        setError(err.message);
-      } finally {
-        setIsLoading(false);
+  const handleSocialLogin = async () => {
+    try {
+      setIsLoading(true);
+      const result = await signInWithPopup(auth, googleProvider);
+      const user = result.user;
+      
+      // Sync to firestore
+      const userRef = doc(db, 'users', user.uid);
+      const userDoc = await getDoc(userRef);
+      
+      if (!userDoc.exists()) {
+        await setDoc(userRef, {
+          uid: user.uid,
+          email: user.email,
+          displayName: user.displayName,
+          createdAt: new Date().toISOString(),
+          updatedAt: new Date().toISOString()
+        });
       }
-    } else {
-      setError("Github login is not configured yet.");
+      
+      navigate('/shop');
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -114,20 +110,13 @@ export default function Login() {
           </div>
 
           {/* SOCIAL LOGIN */}
-          <div className="flex gap-4 mb-8">
+          <div className="flex gap-4 mb-8 text-center">
             <button 
-              onClick={() => handleSocialLogin('GOOGLE')}
-              className="flex-1 py-3 border border-white/5 flex items-center justify-center gap-3 hover:bg-white/5 transition-colors group"
+              onClick={() => handleSocialLogin()}
+              className="w-full py-3 border border-white/5 flex items-center justify-center gap-3 hover:bg-white/5 transition-colors group"
             >
               <Chrome className="w-4 h-4 text-brand-white/40 group-hover:text-brand-white transition-colors" />
-              <span className="text-[10px] tracking-widest text-brand-white/60 uppercase">Google</span>
-            </button>
-            <button 
-              onClick={() => handleSocialLogin('GITHUB')}
-              className="flex-1 py-3 border border-white/5 flex items-center justify-center gap-3 hover:bg-white/5 transition-colors group"
-            >
-              <Github className="w-4 h-4 text-brand-white/40 group-hover:text-brand-white transition-colors" />
-              <span className="text-[10px] tracking-widest text-brand-white/60 uppercase">Github</span>
+              <span className="text-[10px] tracking-widest text-brand-white/60 uppercase font-bold">Continue with Google</span>
             </button>
           </div>
 

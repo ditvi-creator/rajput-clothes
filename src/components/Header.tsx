@@ -116,9 +116,12 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
             
             {user ? (
               <div className="flex items-center gap-4">
-                <span className="hidden xl:block text-[10px] tracking-widest text-brand-white/40 uppercase">
-                  {user.displayName || 'User'}
-                </span>
+                <div className="hidden sm:flex items-center gap-2 p-2 text-brand-white">
+                  <User className="w-5 h-5 sm:w-6 sm:h-6" />
+                  <span className="hidden xl:block text-[10px] tracking-widest text-brand-white/40 uppercase">
+                    {user.displayName || 'User'}
+                  </span>
+                </div>
                 <button 
                   onClick={handleLogout}
                   className="p-2 text-brand-white hover:text-brand-gold transition-colors"
@@ -128,8 +131,8 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="hidden sm:block p-2 text-brand-white hover:text-brand-gold transition-colors">
-                <User className="w-5 h-5 sm:w-6 sm:h-6" />
+              <Link to="/login" className="hidden sm:block px-4 py-2 text-[10px] tracking-[0.3em] uppercase font-bold text-brand-white border border-white/10 hover:border-brand-gold hover:text-brand-gold transition-all">
+                Sign In
               </Link>
             )}
 
