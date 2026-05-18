@@ -1,12 +1,27 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { useSearchParams } from 'react-router-dom';
 import { PRODUCTS, Product } from '../constants';
 import ProductCard from '../components/ProductCard';
 import { SlidersHorizontal, ChevronDown, Check, X, ChevronRight } from 'lucide-react';
 import { cn } from '../lib/utils';
 
 export default function Shop() {
-  const [category, setCategory] = useState<'All' | 'Men' | 'Women'>('All');
+  const [searchParams] = useSearchParams();
+  const initialCategory = searchParams.get('category') as 'Men' | 'Women' | null;
+  
+  const [category, setCategory] = useState<'All' | 'Men' | 'Women'>(initialCategory || 'All');
+
+  // Handle URL updates
+  useEffect(() => {
+    const cat = searchParams.get('category');
+    if (cat === 'Men' || cat === 'Women') {
+      setCategory(cat);
+    } else if (!cat) {
+      // If we want to reset to All when category param is removed
+      // setCategory('All');
+    }
+  }, [searchParams]);
   const [sortBy, setSortBy] = useState<'Featured' | 'Newest' | 'Price: Low' | 'Price: High'>('Featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [isFilterDrawerOpen, setIsFilterDrawerOpen] = useState(false);
