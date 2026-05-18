@@ -8,7 +8,7 @@ export default function CollectionCarousel() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   return (
-    <section className="py-20 bg-brand-onyx overflow-hidden">
+    <section className="py-20 bg-brand-onyx overflow-hidden -mt-[50px]">
       <div className="container mx-auto px-4 sm:px-8 mb-10 flex items-end justify-between">
         <div>
           <span className="inline-block h-px w-8 bg-brand-gold mb-4" />

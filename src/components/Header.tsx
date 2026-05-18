@@ -87,20 +87,20 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
           {/* MOBILE HAMBURGER Trigger */}
           <button 
             onClick={() => setIsMobileMenuOpen(true)}
-            className="lg:hidden p-2 -ml-2 text-brand-white"
+            className="lg:hidden p-4 -ml-4 text-brand-white relative z-10"
           >
             <Menu className="w-6 h-6" />
           </button>
 
           {/* LOGO */}
-          <Link to="/" className="absolute left-1/2 -translate-x-1/2">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-serif tracking-[0.2em] text-brand-white uppercase whitespace-nowrap mr-[150px] ml-[150px]">
-              Rajput <span className="text-brand-gold ml-[-5px] mr-[50px]">Clothes</span>
+          <Link to="/" className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
+            <h1 className="text-[15px] md:text-[20px] lg:text-[26px] font-serif tracking-[0.2em] text-brand-white uppercase whitespace-nowrap ml-[-80px]">
+              Rajput <span className="text-brand-gold ml-1">Clothes</span>
             </h1>
           </Link>
 
           {/* RIGHT UTILITY */}
-          <div className="flex items-center gap-1 sm:gap-4 lg:gap-6">
+          <div className="flex items-center gap-1 sm:gap-4 lg:gap-6 relative z-10">
             <button 
               onClick={onOpenSearch}
               className="p-2 text-brand-white hover:text-brand-gold transition-colors mr-[-15px]"

@@ -44,8 +44,8 @@ export default function ProductCard({ product }: ProductCardProps) {
 
         {/* BADGES */}
         {product.tag && (
-          <div className="absolute top-4 left-4 z-10 px-3 py-1 bg-brand-white text-brand-onyx border border-brand-gold/30 shadow-2xl">
-            <p className="text-[9px] font-bold tracking-widest uppercase">
+          <div className="absolute top-1 left-1 sm:top-4 sm:left-4 z-10 px-1 sm:px-3 py-0.5 sm:py-1 bg-brand-white text-brand-onyx border border-brand-gold/30 shadow-2xl">
+            <p className="text-[6px] sm:text-[9px] font-bold tracking-widest uppercase">
               {product.tag}
             </p>
           </div>
@@ -58,15 +58,15 @@ export default function ProductCard({ product }: ProductCardProps) {
             e.stopPropagation();
             toggleWishlist(product);
           }}
-          className="absolute top-4 right-4 z-20 group/heart"
+          className="absolute top-2 right-2 sm:top-4 sm:right-4 z-20 group/heart"
         >
           <div className={cn(
-            "w-10 h-10 rounded-full border border-brand-white/5 flex items-center justify-center transition-all duration-500",
+            "w-6 h-6 sm:w-10 sm:h-10 rounded-full border border-brand-white/5 flex items-center justify-center transition-all duration-500",
             isWishlisted ? "bg-brand-gold border-brand-gold shadow-lg shadow-brand-gold/20" : "bg-white/80 backdrop-blur-md group-hover/heart:bg-white"
           )}>
             <Heart 
               className={cn(
-                "w-4 h-4 transition-transform duration-500 group-hover/heart:scale-110",
+                "w-2.5 h-2.5 sm:w-4 sm:h-4 transition-transform duration-500 group-hover/heart:scale-110",
                 isWishlisted ? "fill-brand-onyx text-brand-onyx" : "text-brand-white group-hover/heart:text-brand-gold"
               )} 
             />
@@ -81,9 +81,9 @@ export default function ProductCard({ product }: ProductCardProps) {
           e.stopPropagation();
           setShowQuickAdd(true);
         }}
-        className="absolute bottom-[100px] right-4 z-20 w-10 h-10 bg-brand-white text-brand-onyx flex items-center justify-center rounded-full shadow-lg transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 active:scale-90"
+        className="absolute bottom-[60px] sm:bottom-[100px] right-2 sm:right-4 z-20 w-6 h-6 sm:w-10 sm:h-10 bg-brand-white text-brand-onyx flex items-center justify-center rounded-full shadow-lg transform translate-y-12 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300 active:scale-90"
       >
-        <Plus className="w-5 h-5" />
+        <Plus className="w-3 h-3 sm:w-5 sm:h-5" />
       </button>
 
       {/* QUICK ADD DRAWER */}
@@ -123,16 +123,16 @@ export default function ProductCard({ product }: ProductCardProps) {
       </AnimatePresence>
 
       {/* INFO */}
-      <Link to={`/product/${product.id}`} className="py-4">
-        <h3 className="text-sm font-sans uppercase tracking-[0.15em] text-brand-white/90 mb-1">
+      <Link to={`/product/${product.id}`} className="py-2 sm:py-4">
+        <h3 className="text-[8px] sm:text-sm font-sans uppercase tracking-[0.1em] sm:tracking-[0.15em] text-brand-white/90 mb-0.5 sm:mb-1 line-clamp-1">
           {product.name}
         </h3>
-        <div className="flex items-baseline gap-2">
-          <span className="text-sm font-medium text-brand-gold">
+        <div className="flex flex-col sm:flex-row sm:items-baseline gap-0.5 sm:gap-2">
+          <span className="text-[10px] sm:text-sm font-bold text-brand-gold">
             ₹{product.price.toLocaleString('en-IN')}
           </span>
           {product.originalPrice && (
-            <span className="text-xs text-brand-white/40 line-through">
+            <span className="text-[8px] sm:text-xs text-brand-white/40 line-through">
               ₹{product.originalPrice.toLocaleString('en-IN')}
             </span>
           )}

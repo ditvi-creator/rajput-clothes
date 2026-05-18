@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { User, onAuthStateChanged } from 'firebase/auth';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { auth, db } from '../lib/firebase';
 
 interface AuthContextType {
@@ -17,36 +17,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+    let unsubscribeSnapshot: (() => void) | null = null;
+
+    const unsubscribeAuth = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
       
+      // Clean up previous snapshot listener
+      if (unsubscribeSnapshot) {
+        unsubscribeSnapshot();
+        unsubscribeSnapshot = null;
+      }
+
       if (currentUser) {
-        try {
-          const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
-          if (userDoc.exists()) {
-            setUserData(userDoc.data());
+        // Set up real-time listener for user data
+        // onSnapshot works better with offline persistence
+        unsubscribeSnapshot = onSnapshot(
+          doc(db, 'users', currentUser.uid),
+          (docSnap) => {
+            if (docSnap.exists()) {
+              setUserData(docSnap.data());
+            } else {
+              // User doc might not exist yet if they just signed up
+              setUserData({
+                uid: currentUser.uid,
+                email: currentUser.email,
+                displayName: currentUser.displayName,
+                isNew: true
+              });
+            }
+            setLoading(false);
+          },
+          (err) => {
+            console.warn('Firestore snapshot error (likely offline):', err.message);
+            // Fallback for offline if snapshot fails initially
+            setUserData({
+              uid: currentUser.uid,
+              email: currentUser.email,
+              displayName: currentUser.displayName,
+              offline: true
+            });
+            setLoading(false);
           }
-        } catch (err: any) {
-          // If Firestore is offline or fails, we still want to let the user in
-          // since Firebase Auth already confirmed their identity.
-          console.error('Error fetching user data:', err.message);
-          
-          // If it's an offline error, we might want to try again later if needed
-          // but for now, we just proceed.
-          setUserData({
-            uid: currentUser.uid,
-            email: currentUser.email,
-            displayName: currentUser.displayName,
-            offline: true
-          });
-        }
+        );
       } else {
         setUserData(null);
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => {
+      unsubscribeAuth();
+      if (unsubscribeSnapshot) unsubscribeSnapshot();
+    };
   }, []);
 
   return (
