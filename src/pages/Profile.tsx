@@ -1,0 +1,263 @@
+import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { User, Mail, Calendar, MapPin, Package, Heart, Settings, LogOut, Shield, ChevronRight, Camera } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import { auth as firebaseAuth } from '../lib/firebase';
+import { signOut } from 'firebase/auth';
+import { useNavigate, Link } from 'react-router-dom';
+import { cn } from '../lib/utils';
+
+export default function Profile() {
+  const { user, userData, loading } = useAuth();
+  const navigate = useNavigate();
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'wishlist'>('profile');
+
+  const handleLogout = async () => {
+    try {
+      await signOut(firebaseAuth);
+      navigate('/');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen pt-40 bg-brand-onyx flex items-center justify-center">
+        <div className="w-12 h-12 border-2 border-brand-gold/20 border-t-brand-gold rounded-full animate-spin" />
+      </div>
+    );
+  }
+
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
+
+  return (
+    <div className="min-h-screen pt-32 pb-24 bg-brand-onyx">
+      {/* DECORATIVE BACKGROUND */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute top-[-10%] right-[-10%] w-[50%] h-[50%] bg-brand-gold/5 rounded-full blur-[120px]" />
+        <div className="absolute bottom-[-10%] left-[-10%] w-[50%] h-[50%] bg-brand-white/2 rounded-full blur-[120px]" />
+      </div>
+
+      <div className="container mx-auto px-4 sm:px-8 relative z-10">
+        <div className="max-w-6xl mx-auto">
+          {/* HEADER SECTION */}
+          <motion.div 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex flex-col md:flex-row items-center gap-8 mb-16"
+          >
+            <div className="relative group">
+              <div className="w-32 h-32 rounded-full bg-brand-surface border-2 border-brand-gold/20 flex items-center justify-center overflow-hidden">
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
+                ) : (
+                  <User className="w-16 h-16 text-brand-gold" />
+                )}
+              </div>
+              <button className="absolute bottom-0 right-0 p-2 bg-brand-gold text-brand-onyx rounded-full hover:scale-110 transition-transform shadow-lg border-2 border-brand-onyx">
+                <Camera className="w-4 h-4" />
+              </button>
+            </div>
+            
+            <div className="text-center md:text-left">
+              <div className="flex flex-col md:flex-row md:items-center gap-4 mb-4">
+                <h1 className="text-4xl font-serif text-brand-white capitalize">
+                  Royal Member: {user.displayName || 'Valued Guest'}
+                </h1>
+                <span className="inline-flex items-center gap-2 px-3 py-1 bg-brand-gold/10 text-brand-gold text-[10px] tracking-widest uppercase font-bold border border-brand-gold/20 rounded-full w-fit mx-auto md:mx-0">
+                  <Shield className="w-3 h-3" /> Platinum Status
+                </span>
+                {userData?.offline && (
+                  <span className="inline-flex items-center gap-2 px-3 py-1 bg-brand-white/5 text-brand-white/40 text-[9px] tracking-widest uppercase font-bold border border-brand-white/10 rounded-full w-fit mx-auto md:mx-0">
+                    Guest Mode (Offline)
+                  </span>
+                )}
+              </div>
+              <p className="text-brand-white/40 text-xs tracking-[0.3em] uppercase mb-1">Elite Circle Since {userData?.createdAt ? new Date(userData.createdAt).getFullYear() : '2026'}</p>
+              <p className="text-brand-gold/60 text-[10px] tracking-[0.2em] uppercase font-bold">Personal Stylist: Ms. Meera Singh</p>
+            </div>
+
+            <button 
+              onClick={handleLogout}
+              className="md:ml-auto flex items-center gap-2 text-brand-white/40 hover:text-brand-crimson transition-colors group"
+            >
+              <LogOut className="w-4 h-4 group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] tracking-widest uppercase font-bold">Relinquish Session</span>
+            </button>
+          </motion.div>
+
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+            {/* SIDEBAR NAVIGATION */}
+            <div className="lg:col-span-3">
+              <div className="bg-brand-surface/30 backdrop-blur-xl border border-brand-white/5 p-8 sticky top-32">
+                <div className="flex flex-col gap-2">
+                  <TabButton 
+                    active={activeTab === 'profile'} 
+                    onClick={() => setActiveTab('profile')}
+                    icon={User}
+                  >
+                    Identity
+                  </TabButton>
+                  <TabButton 
+                    active={activeTab === 'orders'} 
+                    onClick={() => setActiveTab('orders')}
+                    icon={Package}
+                  >
+                    Heritage Vault
+                  </TabButton>
+                  <TabButton 
+                    active={activeTab === 'wishlist'} 
+                    onClick={() => setActiveTab('wishlist')}
+                    icon={Heart}
+                  >
+                    Curation
+                  </TabButton>
+                  <div className="h-px bg-brand-white/5 my-4" />
+                  <TabButton icon={Settings}>
+                    Preferences
+                  </TabButton>
+                </div>
+              </div>
+            </div>
+
+            {/* MAIN CONTENT */}
+            <div className="lg:col-span-9">
+              <AnimatePresence mode="wait">
+                {activeTab === 'profile' && (
+                  <motion.div
+                    key="profile-tab"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="space-y-8"
+                  >
+                    <SectionTitle>Account Details</SectionTitle>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                      <InfoCard label="Email Registered" value={user.email || '—'} icon={Mail} />
+                      <InfoCard label="Account UID" value={user.uid.substring(0, 12) + '...'} icon={Shield} />
+                      <InfoCard label="Primary Locale" value="Rajasthan, India" icon={MapPin} />
+                      <InfoCard label="Last Login" value={new Date().toLocaleDateString('en-IN', { month: 'long', year: 'numeric', day: 'numeric' })} icon={Calendar} />
+                    </div>
+
+                    <div className="bg-brand-surface/20 border border-brand-white/5 p-8 mt-12">
+                      <div className="flex justify-between items-center mb-6">
+                        <h3 className="text-xl font-serif text-brand-white">Royal Preferences</h3>
+                        <button className="text-[10px] tracking-widest text-brand-gold uppercase font-bold flex items-center gap-2 group">
+                          Edit Profile <ChevronRight className="w-3 h-3 group-hover:translate-x-1 transition-transform" />
+                        </button>
+                      </div>
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                        <div>
+                          <p className="text-[10px] tracking-widest text-brand-white/30 uppercase font-bold mb-2">Favorite Style</p>
+                          <p className="text-sm text-brand-white">Modern Heritage</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] tracking-widest text-brand-white/30 uppercase font-bold mb-2">Preferred Textile</p>
+                          <p className="text-sm text-brand-white">Hand-woven Silk</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] tracking-widest text-brand-white/30 uppercase font-bold mb-2">Sizing</p>
+                          <p className="text-sm text-brand-white">Custom / Made-to-measure</p>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {activeTab === 'orders' && (
+                  <motion.div
+                    key="orders-tab"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="flex flex-col items-center justify-center py-20 text-center"
+                  >
+                    <div className="w-20 h-20 bg-brand-white/5 rounded-full flex items-center justify-center mb-6 border border-brand-gold/10">
+                      <Package className="w-8 h-8 text-brand-gold" />
+                    </div>
+                    <h3 className="text-2xl font-serif text-brand-white mb-4">Your Heritage Vault is Empty</h3>
+                    <p className="text-brand-white/40 text-sm max-w-md mx-auto mb-10 leading-relaxed">
+                      Begin your journey into authentic Rajput craft. Your first acquisition awaits.
+                    </p>
+                    <Link to="/shop">
+                      <button className="px-12 py-5 bg-brand-white text-brand-onyx text-[10px] tracking-[0.4em] uppercase font-black hover:bg-brand-gold transition-all">
+                        Discover the Collections
+                      </button>
+                    </Link>
+                  </motion.div>
+                )}
+
+                {activeTab === 'wishlist' && (
+                  <motion.div
+                    key="wishlist-tab"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: -20 }}
+                    className="flex flex-col items-center justify-center py-20 text-center"
+                  >
+                    <div className="w-20 h-20 bg-brand-white/5 rounded-full flex items-center justify-center mb-6 border border-brand-gold/10">
+                      <Heart className="w-8 h-8 text-brand-gold" />
+                    </div>
+                    <h3 className="text-2xl font-serif text-brand-white mb-4">No Pieces Curated Yet</h3>
+                    <p className="text-brand-white/40 text-sm max-w-md mx-auto mb-10 leading-relaxed">
+                      Save your favorite pieces for future royal occasions.
+                    </p>
+                    <Link to="/shop">
+                      <button className="px-12 py-5 bg-brand-gold text-brand-onyx text-[10px] tracking-[0.4em] uppercase font-black hover:bg-brand-white transition-all">
+                        Browse the Atelier
+                      </button>
+                    </Link>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function TabButton({ active, icon: Icon, children, onClick }: { active?: boolean, icon: any, children: React.ReactNode, onClick?: () => void }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={cn(
+        "flex items-center gap-4 px-6 py-4 text-[10px] tracking-[0.3em] uppercase font-bold transition-all w-full",
+        active 
+          ? "bg-brand-gold text-brand-onyx" 
+          : "text-brand-white/40 hover:bg-brand-white/5 hover:text-brand-white"
+      )}
+    >
+      <Icon className="w-4 h-4" />
+      {children}
+    </button>
+  );
+}
+
+function SectionTitle({ children }: { children: React.ReactNode }) {
+  return (
+    <h2 className="text-[12px] tracking-[0.5em] text-brand-gold uppercase font-bold mb-8 flex items-center gap-4">
+      {children}
+      <div className="h-px flex-1 bg-brand-gold/20" />
+    </h2>
+  );
+}
+
+function InfoCard({ label, value, icon: Icon }: { label: string, value: string, icon: any }) {
+  return (
+    <div className="bg-brand-white/2 border border-brand-white/5 p-6 group hover:border-brand-gold/50 transition-all duration-500">
+      <div className="flex items-center gap-4 mb-4">
+        <div className="p-2 bg-brand-gold/10 text-brand-gold">
+          <Icon className="w-4 h-4" />
+        </div>
+        <p className="text-[9px] tracking-widest text-brand-white/30 uppercase font-bold">{label}</p>
+      </div>
+      <p className="text-brand-white font-medium break-all">{value}</p>
+    </div>
+  );
+}

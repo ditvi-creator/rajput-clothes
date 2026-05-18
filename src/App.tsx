@@ -25,6 +25,7 @@ import { WishlistProvider } from './context/WishlistContext';
 import { AuthProvider } from './context/AuthContext';
 import Wishlist from './pages/Wishlist';
 import Login from './pages/Login';
+import Profile from './pages/Profile';
 import About from './pages/About';
 import Contact from './pages/Contact';
 
@@ -50,6 +51,7 @@ export default function App() {
             <Route path="/checkout" element={<Checkout />} />
             <Route path="/wishlist" element={<Wishlist />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
           </Routes>

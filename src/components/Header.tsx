@@ -110,12 +110,12 @@ export default function Header({ onOpenSearch, onOpenCart }: HeaderProps) {
             
             {user ? (
               <div className="flex items-center gap-4">
-                <div className="hidden sm:flex items-center gap-2 p-2 text-brand-white">
+                <Link to="/profile" className="hidden sm:flex items-center gap-2 p-2 text-brand-white hover:text-brand-gold transition-colors">
                   <User className="w-5 h-5 sm:w-6 sm:h-6" />
                   <span className="hidden xl:block text-[10px] tracking-widest text-brand-white/40 uppercase">
                     {user.displayName || 'User'}
                   </span>
-                </div>
+                </Link>
                 <button 
                   onClick={handleLogout}
                   className="p-2 text-brand-white hover:text-brand-gold transition-colors"

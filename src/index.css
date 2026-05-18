@@ -5,11 +5,11 @@
   --font-serif: "Cormorant Garamond", serif;
   --font-sans: "Inter", sans-serif;
 
-  --color-brand-onyx: #FDFCFB;
-  --color-brand-gold: #8C6D31;
+  --color-brand-onyx: #FFF5F7;
+  --color-brand-gold: #D4AF37;
   --color-brand-crimson: #931A25;
-  --color-brand-white: #121212;
-  --color-brand-surface: #F4F0EB;
+  --color-brand-white: #2D1B22;
+  --color-brand-surface: #FCE7EB;
 }
 
 @layer base {

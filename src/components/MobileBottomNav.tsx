@@ -3,6 +3,7 @@ import { motion } from 'motion/react';
 import { Home, Search, ShoppingBag, Heart, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useCart } from '../context/CartContext';
+import { useAuth } from '../context/AuthContext';
 
 interface MobileBottomNavProps {
   onOpenSearch: () => void;
@@ -11,6 +12,7 @@ interface MobileBottomNavProps {
 
 export default function MobileBottomNav({ onOpenSearch, onOpenCart }: MobileBottomNavProps) {
   const { totalItems } = useCart();
+  const { user } = useAuth();
   return (
     <nav className="sm:hidden fixed bottom-0 left-0 right-0 z-50 bg-brand-onyx/90 backdrop-blur-xl border-t border-brand-white/5 px-6 py-3 shadow-[0_-4px_20px_rgba(0,0,0,0.03)]">
       <div className="flex items-center justify-between">
@@ -32,8 +34,12 @@ export default function MobileBottomNav({ onOpenSearch, onOpenCart }: MobileBott
           </div>
           <span className="text-[9px] uppercase tracking-widest font-bold">Bag</span>
         </button>
-        <NavButton icon={<Heart className="w-6 h-6" />} label="Vault" />
-        <NavButton icon={<User className="w-6 h-6" />} label="Account" />
+        <Link to="/wishlist">
+          <NavButton icon={<Heart className="w-6 h-6" />} label="Vault" />
+        </Link>
+        <Link to={user ? "/profile" : "/login"}>
+          <NavButton icon={<User className="w-6 h-6" />} label="Account" />
+        </Link>
       </div>
     </nav>
   );

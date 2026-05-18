@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Mail, Lock, ArrowRight, Eye, EyeOff, Chrome, User } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -11,8 +11,10 @@ import {
 import { auth, googleProvider } from '../lib/firebase';
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
+import { useAuth } from '../context/AuthContext';
 
 export default function Login() {
+  const { user: currentUser } = useAuth();
   const [mode, setMode] = useState<'LOGIN' | 'SIGNUP'>('LOGIN');
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -22,37 +24,48 @@ export default function Login() {
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (currentUser) {
+      navigate('/');
+    }
+  }, [currentUser, navigate]);
+
   const handleSocialLogin = async () => {
     if (isLoading) return;
+    setIsLoading(true);
+    setError(null);
     try {
-      setIsLoading(true);
-      setError(null);
       const result = await signInWithPopup(auth, googleProvider);
       const user = result.user;
       
-      // Sync to firestore
-      const userRef = doc(db, 'users', user.uid);
-      const userDoc = await getDoc(userRef);
-      
-      if (!userDoc.exists()) {
-        await setDoc(userRef, {
-          uid: user.uid,
-          email: user.email,
-          displayName: user.displayName,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        });
+      // Async sync to firestore - wrap in try/catch so it doesn't block login if offline
+      try {
+        const userRef = doc(db, 'users', user.uid);
+        const userDoc = await getDoc(userRef);
+        
+        if (!userDoc.exists()) {
+          await setDoc(userRef, {
+            uid: user.uid,
+            email: user.email,
+            displayName: user.displayName,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          });
+        }
+      } catch (syncErr) {
+        console.warn('Firestore sync failed, but authentication succeeded:', syncErr);
       }
       
-      navigate('/shop');
+      // useEffect in this component will detect currentUser change and redirect
     } catch (err: any) {
       if (err.code === 'auth/cancelled-popup-request' || err.code === 'auth/popup-closed-by-user') {
+        setIsLoading(false);
         return;
       }
       setError(err.message);
-    } finally {
       setIsLoading(false);
     }
+    // We don't setIsLoading(false) here if successful because navigation will happen
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -69,23 +82,30 @@ export default function Login() {
         
         // Update profile
         if (displayName) {
-          await updateProfile(user, { displayName });
+          try {
+            await updateProfile(user, { displayName });
+          } catch (e) {
+            console.warn('Profile update failed');
+          }
         }
         
-        // Create user doc
-        await setDoc(doc(db, 'users', user.uid), {
-          uid: user.uid,
-          email: user.email,
-          displayName: displayName || user.email?.split('@')[0],
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString()
-        });
+        // Create user doc - try/catch to not block if offline
+        try {
+          await setDoc(doc(db, 'users', user.uid), {
+            uid: user.uid,
+            email: user.email,
+            displayName: displayName || user.email?.split('@')[0],
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString()
+          });
+        } catch (syncErr) {
+          console.warn('User document creation failed');
+        }
       }
-      navigate('/shop');
+      // useEffect will handle navigation
     } catch (err: any) {
       console.error(err);
       setError(err.message);
-    } finally {
       setIsLoading(false);
     }
   };
